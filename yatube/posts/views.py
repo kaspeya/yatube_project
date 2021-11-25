@@ -4,6 +4,7 @@ from django.http import HttpResponse
 def index(request):
     return HttpResponse('Главная страница')
 
+#test
 
 # Страница с постами, отфильтрованные по группам.
 def group_posts(request,pk):
