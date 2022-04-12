@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load cache %}
+{% load thumbnail %}
+
+{% block title %}
+  <title>Последние обновления отслеживаемых авторов</title>
+{% endblock %}
+
+
+{% block content %}
+  <main>
+    <div>
+      <h2>Последние обновления отслеживаемых авторов</h2>
+        {% include 'posts/includes/switcher.html' %}
+        {% for post in page_obj %}
+        {% include 'posts/includes/post_list.html'%}
+          <!-- если у поста есть группа -->
+          {% if post.group.slug %}
+             все записи группы
+             <a href="{% url 'posts:group_list' post.group.slug %}">{{ post.group.title }}</a>
+          {% else %}
+             без группы
+          {% endif %}
+        {% if not forloop.last %}<hr> {% endif %}
+        {% endfor %}
+      {% include 'posts/includes/paginator.html' %}
+    </div>
+  </main>
+{% endblock %}
