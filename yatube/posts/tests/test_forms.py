@@ -1,6 +1,5 @@
 import shutil
 
-from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
@@ -126,12 +125,12 @@ class PostsFormsTests(TestCase):
         self.assertEqual(Comment.objects.count(), comment_count + 1)
         self.assertEqual(comment.text, form_data['text'])
 
-    def test_not_author_trys_comment_post(self):
+    def test_guest_client_trys_comment_post(self):
         form_data = {
             'text': 'Комментарий для теста 2',
         }
         self.authorized_client.logout()
-        response = self.not_author_client.post(
+        response = self.guest_client.post(
             reverse('posts:add_comment', kwargs={'post_id': self.post.pk}),
             data=form_data,
             follow=False
@@ -141,24 +140,3 @@ class PostsFormsTests(TestCase):
             reverse('posts:add_comment', kwargs={'post_id': self.post.pk})
         )
         self.assertRedirects(response, redirect_url)
-
-    def test_index_cache(self):
-        # Создаем пост, затем удаляем после записи в контент
-        cache.clear()
-        post_for_cache = Post.objects.create(
-            text='КэшТест',
-            group=self.group,
-            author=self.user
-        )
-        first_response = self.authorized_client.get(reverse('posts:index'))
-        first_object = first_response.content
-        post_for_cache.delete()
-        # Проверяем кэш
-        second_response = self.authorized_client.get(reverse('posts:index'))
-        second_object = second_response.content
-        self.assertEqual(first_object, second_object)
-        cache.clear()
-        # Проверяем, что кэш удалился
-        last_response = self.authorized_client.get(reverse('posts:index'))
-        last_object = last_response.content
-        self.assertNotEqual(second_object, last_object)

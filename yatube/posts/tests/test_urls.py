@@ -30,6 +30,8 @@ class PostURLTests(TestCase):
         cls.authorized_client_url_names = (
             ('/create/', 'posts/post_create.html'),
             (f'/posts/{cls.post.pk}/edit/', 'posts/post_create.html'),
+            (f'/posts/{cls.post.pk}/comment/', 'posts/post_detail.html'),
+            ('/follow/', 'posts/follow.html')
         )
 
     def setUp(self):
