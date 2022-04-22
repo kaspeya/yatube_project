@@ -1,6 +1,5 @@
 import tempfile
 
-
 POST_TEXT = 'Тестовый пост'
 GROUP_TITLE = 'Тестовая группа'
 GROUP_SLUG = 'test-slug'
