@@ -291,14 +291,14 @@ class FollowViewsTest(TestCase):
         # Подписываемся
         follow_count = Follow.objects.count()
         self.authorized_client.post(self.PROFILE_FOLLOW[1])
+        follow = Follow.objects.first()
         self.assertEqual(Follow.objects.count(), follow_count + 1)
-        self.assertTrue(Follow.objects.filter(
-            author=self.user_following,
-            user=self.user
-        ).exists())
+        self.assertEqual(follow.author, self.user_following)
+        self.assertEqual(follow.user, self.user_follower)
 
     def test_unfollow(self):
         # Отписываемся
+        self.authorized_client.post(self.PROFILE_FOLLOW[1])
         follow_count = Follow.objects.count()
         self.follower_client.get(self.PROFILE_UNFOLLOW[1])
         self.assertEqual(Follow.objects.count(), follow_count - 1)
